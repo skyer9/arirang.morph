@@ -28,7 +28,7 @@ import java.util.List;
  * file utility class
  */
 public class FileUtil {
-  
+
   /**
    * Given a file name for a file that is located somewhere in the application
    * classpath, return a File object representing the file.
@@ -59,7 +59,7 @@ public class FileUtil {
     }
     return file;
   }
-  
+
   /**
    * Reads the contents of a file line by line to a List of Strings.
    * The file is always closed.
@@ -80,7 +80,7 @@ public class FileUtil {
       closeQuietly(in);
     }
   }
-    
+
   /**
    * Reads the contents of a file line by line to a List of Strings.
    * The file is always closed.
@@ -94,22 +94,25 @@ public class FileUtil {
    * @since Commons IO 1.1
    */
   public static List<String> readLines(String fName, String encoding) throws MorphException, IOException  {
-    InputStream in = null;        
+    InputStream in = null;
     try {
+			File file = new File(fName);
+			if (file == null || file.exists() != true) {
+				file = getClassLoaderFile(fName);
+			}
 
-      File file = getClassLoaderFile(fName);
       if(file!=null&&file.exists()) {
         in = openInputStream(file);
       } else {
         in = new ByteArrayInputStream(readByteFromCurrentJar(fName));
       }
-        
+
       return readLines(in, encoding);
     } finally {
       closeQuietly(in);
     }
   }
-    
+
   //-----------------------------------------------------------------------
   /**
    * Opens a {@link FileInputStream} for the specified file, providing better
@@ -121,7 +124,7 @@ public class FileUtil {
    * An exception is thrown if the file does not exist.
    * An exception is thrown if the file object exists but is a directory.
    * An exception is thrown if the file exists but cannot be read.
-   * 
+   *
    * @param file  the file to open for input, must not be <code>null</code>
    * @return a new {@link FileInputStream} for the specified file
    * @throws FileNotFoundException if the file does not exist
@@ -142,7 +145,7 @@ public class FileUtil {
     }
     return new FileInputStream(file);
   }
-    
+
   // readLines
   //-----------------------------------------------------------------------
   /**
@@ -214,7 +217,7 @@ public class FileUtil {
     }
     return list;
   }
-    
+
   /**
    * Unconditionally close an <code>InputStream</code>.
    * <p>
@@ -232,8 +235,8 @@ public class FileUtil {
       // ignore
     }
   }
-    
-    
+
+
 
   //-----------------------------------------------------------------------
   /**
@@ -270,7 +273,7 @@ public class FileUtil {
     String  jarPath = FileUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 
     JarResources jar = new JarResources(jarPath);
-    try {  
+    try {
       return jar.getResource(resource);
     } catch (Exception e) {
       throw new MorphException(e.getMessage(),e);

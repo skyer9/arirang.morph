@@ -114,7 +114,13 @@ public class KoreanEnv {
 
 		File file = null;
 		try {
-			file = FileUtil.getClassLoaderFile(FILE_KOREAN_PROPERTY);
+			// TODO : may error occurs when path contains special char
+			File jarPath = new File(KoreanEnv.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+			String propertiesPath = jarPath.getParentFile().getAbsolutePath();
+			file = new File(propertiesPath + "/korean.properties");
+			if (file == null) {
+				file = FileUtil.getClassLoaderFile(FILE_KOREAN_PROPERTY);
+			}
 
 			if (file != null) {
 				properties.load(new FileInputStream(file));
@@ -128,7 +134,6 @@ public class KoreanEnv {
 		}
 		return properties;
 	}
-
 
 	/**
 	 * Returns the value of a property.
