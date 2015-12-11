@@ -118,7 +118,7 @@ public class KoreanEnv {
 			File jarPath = new File(KoreanEnv.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 			String propertiesPath = jarPath.getParentFile().getAbsolutePath();
 			file = new File(propertiesPath + "/korean.properties");
-			if (file == null) {
+			if (file == null || file.exists() != true) {
 				file = FileUtil.getClassLoaderFile(FILE_KOREAN_PROPERTY);
 			}
 
