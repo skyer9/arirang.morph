@@ -26,6 +26,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.io.File;
+
+import org.apache.commons.io.monitor.FileAlterationListener;
+import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
 
 public class DictionaryUtil {
 
@@ -45,10 +51,18 @@ public class DictionaryUtil {
 
 	private static HashMap<String, String> abbreviations;
 
+	private static FileAlterationMonitor monitor;
+
 	/**
 	 * 사전을 로드한다.
 	 */
 	public synchronized static void loadDictionary() throws MorphException {
+
+		// monitor file change every 30 seconds
+		final long pollingInterval = 30 * 1000;
+
+		// wait file modification end
+		final long delayfilemodify = 5 * 1000;
 
 		dictionary = new Trie<String, WordEntry>(true);
 		List<String> strList = null;
@@ -59,6 +73,30 @@ public class DictionaryUtil {
 			strList.addAll(FileUtil.readLines(KoreanEnv.getInstance().getValue(KoreanEnv.FILE_EXTENSION),"UTF-8"));
 			compounds = FileUtil.readLines(KoreanEnv.getInstance().getValue(KoreanEnv.FILE_COMPOUNDS),"UTF-8");
 			abbrevs = FileUtil.readLines(KoreanEnv.getInstance().getValue(KoreanEnv.FILE_ABBREV),"UTF-8");
+
+			if (monitor == null) {
+				File dicPath = new File(KoreanEnv.getInstance().getValue(KoreanEnv.FILE_EXTENSION));
+				File folder = new File(dicPath.getParentFile().getAbsolutePath());
+				if (folder != null && folder.exists()) {
+					FileAlterationObserver observer = new FileAlterationObserver(folder);
+					monitor = new FileAlterationMonitor(pollingInterval);
+					FileAlterationListener listener = new FileAlterationListenerAdaptor() {
+							@Override
+							public void onFileChange(File file) {
+								try {
+									Thread.sleep(delayfilemodify);
+									dictionary = null;
+								} catch (InterruptedException e) {
+									new MorphException(e.getMessage(),e);
+								}
+							}
+						};
+
+					observer.addListener(listener);
+					monitor.addObserver(observer);
+					monitor.start();
+				}
+			}
 		} catch (IOException e) {
 			new MorphException(e.getMessage(),e);
 		} catch (Exception e) {
