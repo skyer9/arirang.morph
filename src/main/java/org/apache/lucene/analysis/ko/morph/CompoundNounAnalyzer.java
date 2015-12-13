@@ -152,7 +152,7 @@ public class CompoundNounAnalyzer {
     return false;
   }
 
-  private boolean analyze5Word(String input,List outputs, boolean isFirst) throws MorphException {
+  private boolean analyze5Word(String input, List<CompoundEntry> outputs, boolean isFirst) throws MorphException {
 
     int[] units1 = {2,3};
     CompoundEntry[] entries1 = analysisBySplited(units1,input,isFirst);
