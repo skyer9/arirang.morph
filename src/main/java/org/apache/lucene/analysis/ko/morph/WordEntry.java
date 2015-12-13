@@ -30,64 +30,64 @@ public class WordEntry {
   public static final int IDX_NE = 5;
   public static final int IDX_ADJ = 6; // 형용사
   public static final int IDX_NPR = 7;  // 명사의 분류 (M:Measure)
-  public static final int IDX_CNOUNX = 8; 
+  public static final int IDX_CNOUNX = 8;
   public static final int IDX_REGURA = 9;
-  
+
   /**
    * 단어
    */
   private String word;
-  
+
   /**
    * 단어특성
    */
   private char[] features;
-  
-  private List<CompoundEntry> compounds = Collections.EMPTY_LIST;
-  
+
+  private List<CompoundEntry> compounds = Collections.emptyList();
+
   public WordEntry() {
-    
+
   }
-  
+
   public WordEntry(String word) {
     this.word = word;
   }
-  
+
   public WordEntry(String word, char[] cs) {
     this.word = word;
     this.features = cs;
   }
-  
+
   public WordEntry(String word, List<CompoundEntry> c) {
     this.word = word;
     this.compounds = c;
   }
-  
+
   public void setWord(String w) {
     this.word = w;
   }
-  
+
   public String getWord() {
     return this.word;
   }
-  
+
   public void setFeatures(char[] cs) {
     this.features = cs;
   }
-  
+
   public char getFeature(int index) {
-    if(features==null||features.length<=index) return '0';    
+    if(features==null||features.length<=index) return '0';
     return features[index];
   }
-  
+
   public char[] getFeatures() {
     return this.features;
   }
-  
+
   public void setCompounds(List<CompoundEntry> c) {
     this.compounds = c;
   }
-  
+
   public List<CompoundEntry> getCompounds() {
     return this.compounds;
   }

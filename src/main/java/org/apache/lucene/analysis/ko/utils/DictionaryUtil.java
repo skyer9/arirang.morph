@@ -129,7 +129,7 @@ public class DictionaryUtil {
 				dictionary.add(entry.getWord(), entry);
 			}
 
-		abbreviations = new HashMap();
+		abbreviations = new HashMap<String, String>();
 
 		for(String abbrev: abbrevs)
 			{
